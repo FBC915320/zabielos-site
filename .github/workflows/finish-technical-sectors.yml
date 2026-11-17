@@ -1,0 +1,76 @@
+name: Finish technical sector pages
+on:
+  push:
+    paths: ['.github/workflows/finish-technical-sectors.yml']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Improve sector imagery and detailed specifications in all languages
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          texts={
+          'pt':[
+          ('Filmes e embalagens flexíveis','Filmes stretch manuais e para máquinas, bobinas plásticas, sacos e materiais flexíveis de embalagem.','Paletização, estabilização de cargas e proteção contra poeira e umidade.','Tipo de filme, largura, espessura em micras, comprimento por bobina, diâmetro do tubete, volume e destino.','Filme stretch não é lona de PVC ou PE.'),
+          ('Transporte e logística','Lonas de PVC para caminhões, lonas de PE para coberturas temporárias, capas sob medida e acessórios de fixação.','Proteção de cargas, caminhões, reboques, máquinas e mercadorias armazenadas.','Material PVC ou PE, dimensões, gramatura, reforços, ilhoses, soldas, costuras, quantidade e destino.','PVC e PE possuem aplicações e características distintas.'),
+          ('Lazer e proteção','Telas de sombreamento, velas tensionadas, coberturas para piscinas e proteção de áreas externas.','Jardins, varandas, piscinas, estacionamentos e espaços de convivência.','Formato, medidas, cor, fator de sombreamento, exposição ao vento, fixação e quantidade.','Telas permeáveis não são equivalentes a coberturas impermeáveis.')],
+          'en':[
+          ('Films and flexible packaging','Hand and machine stretch film, plastic rolls, bags and flexible packaging materials.','Palletizing, load stabilization and protection from dust and moisture.','Film type, width, micron thickness, roll length, core diameter, volume and destination.','Stretch film is different from PVC and PE tarpaulins.'),
+          ('Transport and logistics','PVC truck tarpaulins, PE temporary covers, custom protective covers and fastening accessories.','Protecting freight, trucks, trailers, machinery and stored goods.','PVC or PE material, dimensions, fabric weight, reinforcement, eyelets, seams, quantity and destination.','PVC and PE have different characteristics and applications.'),
+          ('Leisure and protection','Shade nets, tensioned sails, swimming pool covers and outdoor protection.','Gardens, patios, pools, parking areas and outdoor living spaces.','Shape, size, color, shade factor, wind exposure, fastening and quantity.','Permeable shade nets are not the same as waterproof covers.')],
+          'es':[
+          ('Películas y envases flexibles','Film stretch manual y para máquinas, bobinas, bolsas y envases flexibles.','Paletización, estabilización de cargas y protección contra polvo y humedad.','Tipo de film, ancho, espesor en micras, longitud por bobina, diámetro del tubo, volumen y destino.','El film stretch es diferente de las lonas de PVC y PE.'),
+          ('Transporte y logística','Lonas PVC para camiones, lonas PE temporales, cubiertas a medida y accesorios.','Protección de cargas, camiones, remolques, máquinas y mercancías.','Material PVC o PE, medidas, gramaje, refuerzos, ojales, soldaduras, cantidad y destino.','PVC y PE tienen características y usos diferentes.'),
+          ('Ocio y protección','Mallas de sombreo, velas tensadas, cubiertas de piscinas y protección exterior.','Jardines, terrazas, piscinas, aparcamientos y espacios recreativos.','Forma, medidas, color, factor de sombra, viento, fijación y cantidad.','Las mallas permeables no equivalen a cubiertas impermeables.')],
+          'it':[
+          ('Film e imballaggi flessibili','Film estensibile manuale e per macchine, bobine, sacchetti e imballaggi flessibili.','Pallettizzazione, stabilizzazione dei carichi e protezione da polvere e umidità.','Tipo di film, larghezza, spessore in micron, lunghezza, anima, volume e destinazione.','Il film estensibile è diverso dai teloni PVC e PE.'),
+          ('Trasporti e logistica','Teloni PVC per camion, coperture temporanee PE, coperture su misura e accessori.','Protezione di carichi, camion, rimorchi, macchine e merci.','Materiale PVC o PE, misure, grammatura, rinforzi, occhielli, saldature, quantità e destinazione.','PVC e PE hanno caratteristiche e applicazioni diverse.'),
+          ('Tempo libero e protezione','Reti ombreggianti, vele tensionate, coperture per piscine e protezione esterna.','Giardini, terrazze, piscine, parcheggi e spazi ricreativi.','Forma, misure, colore, fattore ombreggiante, vento, fissaggi e quantità.','Le reti permeabili non equivalgono a coperture impermeabili.')]}
+          slugs=['flexible-films','transport-logistics','leisure-protection']
+          film='https://industrialstretchwrap.com/assets/stretch-wrap-film-BjnCkEV9.jpg'
+          for lang,rows in texts.items():
+            for i,(title,products,applications,specs,note) in enumerate(rows):
+              p=Path(lang)/'commerce'/slugs[i]/'index.html'
+              s=p.read_text()
+              s=re.sub(r'(<div class="zb-sector-detail-top"><img src=")[^"]+',lambda m:m.group(1)+(film if i==0 else '../../../assets/products/'+('pvc-cover.webp' if i==1 else 'shade-sail.webp')),s,count=1)
+              s=re.sub(r'(<section class="subhero zb-inner-hero">.*?<h1>).*?(</h1>)',lambda m:m.group(1)+title+m.group(2),s,count=1,flags=re.S)
+              extra=f'<div class="zb-detail-knowledge"><section><h2>'+{'pt':'Produtos e aplicações','en':'Products and applications','es':'Productos y aplicaciones','it':'Prodotti e applicazioni'}[lang]+f'</h2><p>{products}</p><p>{applications}</p></section><section><h2>'+{'pt':'Informações técnicas para cotação','en':'Technical quotation details','es':'Datos técnicos para cotizar','it':'Dati tecnici per il preventivo'}[lang]+f'</h2><p>{specs}</p><p>{note}</p></section></div>'
+              s=s.replace('<div class="zb-sector-quote">',extra+'<div class="zb-sector-quote">',1)
+              p.write_text(s)
+            for rel in ('index.html','commerce/index.html'):
+              p=Path(lang)/rel
+              s=p.read_text()
+              s=re.sub(r'(<a class="zb-premium-card" href="(?:commerce/)?flexible-films/">.*?<img src=")[^"]+',lambda m:m.group(1)+film,s,count=1,flags=re.S)
+              p.write_text(s)
+          css=Path('assets/zabielos-clean.css')
+          css.write_text(css.read_text()+"""
+          .zb-detail-knowledge{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:30px}
+          .zb-detail-knowledge section{background:#f2f7f7;border:1px solid #dfe8eb;border-radius:14px;padding:25px}
+          .zb-detail-knowledge h2{font-size:22px;margin:0 0 13px}
+          .zb-detail-knowledge p{margin:0 0 12px;color:#4d6575}
+          @media(max-width:700px){.zb-detail-knowledge{grid-template-columns:1fr}.zb-detail-knowledge section{padding:20px}}
+          """)
+          print('Updated 12 sector pages, 8 category images and shared CSS')
+          PY
+      - name: Verify
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for l in ('pt','en','es','it'):
+            for s in ('flexible-films','transport-logistics','leisure-protection'):
+              p=Path(l)/'commerce'/s/'index.html'
+              assert 'zb-detail-knowledge' in p.read_text(),p
+          print('Verified 12 technical category pages')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pt en es it assets/zabielos-clean.css
+          git commit -m "Improve technical products and applications for films transport and shade across four languages"
+          git push
