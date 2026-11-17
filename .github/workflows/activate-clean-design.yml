@@ -1,0 +1,51 @@
+name: Activate unified design on all pages
+on:
+  push:
+    paths: ['.github/workflows/activate-clean-design.yml']
+permissions:
+  contents: write
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Switch stylesheets and correct packaging photos
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          count=0
+          correct='https://environment.ec.europa.eu/sites/default/files/styles/ewcms_metatag_image/public/2026-01/GettyImages-1222359828.jpg?h=119335f7&amp;itok=TgiYXBYl'
+          for p in Path('.').rglob('index.html'):
+            if '.git' in p.parts:continue
+            h=p.read_text(encoding='utf-8')
+            h=h.replace('assets/site.css','assets/zabielos-clean.css')
+            if len(p.parts)>=2 and p.parts[0] in ('pt','en','es','it') and (len(p.parts)==2 or (len(p.parts)==3 and p.parts[1]=='commerce')):
+              cards=list(re.finditer(r'<a class="zb-premium-card"[^>]*>.*?</a>',h,re.S))
+              if len(cards)>=2:
+                m=cards[1]
+                card=m.group()
+                card=re.sub(r'(<img\s+src=")[^"]+',lambda x:x.group(1)+correct,card,count=1)
+                card=re.sub(r' onerror="[^"]*"','',card)
+                h=h[:m.start()]+card+h[m.end():]
+            p.write_text(h,encoding='utf-8')
+            count+=1
+          print('Updated',count,'pages')
+          PY
+      - name: Validate stylesheet references
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          pages=list(Path('.').rglob('index.html'))
+          missing=[str(p) for p in pages if 'assets/site.css' in p.read_text()]
+          if missing:raise SystemExit('Old stylesheet references: '+str(missing[:10]))
+          if not Path('assets/zabielos-clean.css').exists():raise SystemExit('Missing new stylesheet')
+          print('Validated',len(pages),'pages')
+          PY
+      - name: Commit corrected site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A pt en es it index.html
+          git commit -m "Use unified clean design across all multilingual pages"
+          git push
