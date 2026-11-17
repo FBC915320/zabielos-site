@@ -75,3 +75,22 @@ body{font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
 @media(max-width:1250px){.zb-header-tagline{display:none}.zb-company{grid-template-columns:1fr}.zb-company-photo{min-height:150px;height:150px}.zb-sector-band{display:block}.zb-sector-band h2{margin-bottom:15px}}
 @media(max-width:850px){.headrow .nav{display:none}.headrow .nav.open{display:flex}.zb-company-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zb-sector-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.zb-home .wrap{padding-left:20px;padding-right:20px}.zb-hero-inner{padding-top:50px!important;padding-bottom:42px!important}.zb-hero h1{padding-left:15px;font-size:37px}.zb-hero p,.zb-hero-actions{padding-left:20px}.zb-service{padding-left:58px!important}.zb-company-grid{grid-template-columns:1fr}.zb-company{grid-template-columns:43% 57%;min-height:210px}.zb-company-photo{height:100%;min-height:210px}.zb-company-content{padding:12px}.zb-company-logo img{max-height:58px}.zb-company-content p{font-size:12px}.zb-sector-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zb-sector-band h2{font-size:21px}}
+
+/* Neutral B2B sector-led identity, no supplier branding */
+.zb-neutral-sectors{padding:48px 0 55px;background:#fff}
+.zb-neutral-sectors .lead{max-width:800px;margin:15px 0 24px}
+.zb-neutral-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.zb-sector-card{border:1px solid #e0e7e8;border-radius:13px;overflow:hidden;background:white;box-shadow:0 5px 20px #06243610}
+.zb-sector-card>a{display:block;height:100%;color:inherit}
+.zb-sector-card>a:hover{text-decoration:none}
+.zb-sector-image{height:170px;background:linear-gradient(135deg,#dbe9e9,#9fc3d3);overflow:hidden}
+.zb-sector-image img{width:100%;height:100%;object-fit:cover}
+.zb-sector-text{padding:18px 20px 22px}
+.zb-sector-text span{color:#669c2e;font-size:12px;font-weight:800}
+.zb-sector-text h3{margin:7px 0;font-size:20px}
+.zb-sector-text p{font-size:14px;color:#5a6d77;min-height:58px}
+.zb-sector-text strong{color:#337034;font-size:13px}
+.zb-neutral-card{min-height:230px}
+.zb-neutral-card h3,.zb-neutral-card p,.zb-neutral-card a{padding-left:22px;padding-right:22px}
+@media(max-width:900px){.zb-neutral-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.zb-neutral-grid{grid-template-columns:1fr}.zb-sector-image{height:190px}}
