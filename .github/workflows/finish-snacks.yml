@@ -22,6 +22,7 @@ jobs:
           data=urllib.request.urlopen(request,timeout=35).read()
           im=Image.open(io.BytesIO(data)).convert('RGB')
           assert min(im.size)>=350,im.size
+          im=im.crop((0,0,im.width,int(im.height*.76)))
           im.thumbnail((1100,1100),Image.Resampling.LANCZOS)
           p=Path('assets/products/snacks-private-label.webp')
           p.parent.mkdir(parents=True,exist_ok=True)
