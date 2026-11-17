@@ -21,7 +21,7 @@ jobs:
           print('Original logo dimensions',source.size)
           # Crop the official first letter Z, preserving its proportions
           w,h=source.size
-          box=(int(w*.035),int(h*.10),int(w*.166),int(h*.92))
+          box=(int(w*.035),int(h*.10),int(w*.128),int(h*.92))
           letter=source.crop(box)
           # Remove pure white background for a clean icon
           pix=letter.load()
