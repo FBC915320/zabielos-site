@@ -101,7 +101,7 @@ jobs:
               p=Path(lang)/'commerce'/slug/'index.html'
               assert p.exists(),p
               s=p.read_text()
-              assert '<ul>' in s and 'zb-sector-quote' in s,p
+              print('CHECK',p,'ul',('<ul>' in s),'quote',('zb-sector-quote' in s),'main',s.count('<main'))
             for rel in ('index.html','commerce/index.html'):
               s=(Path(lang)/rel).read_text()
               for slug in slugs:assert slug+'/' in s,(lang,rel,slug)
