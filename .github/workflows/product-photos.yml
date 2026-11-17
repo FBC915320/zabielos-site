@@ -36,7 +36,7 @@ jobs:
               print('META',key,[x[:250] for x in meta if 'image' in x.lower()][:8])
               urls=[]
               for tag in meta:
-                if re.search(r'(?:og:image|twitter:image)',tag,re.I):
+                if ('itemprop="image"' in tag or 'og:image' in tag or 'twitter:image' in tag):
                   m=re.search(r'content=["\']([^"\']+)["\']',tag,re.I)
                   if m:urls.append(html.unescape(m.group(1)))
               for src in urls:
