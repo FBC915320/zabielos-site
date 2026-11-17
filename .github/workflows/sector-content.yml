@@ -66,7 +66,10 @@ jobs:
               page=re.sub(r'<nav class="nav" id="nav">.*?</nav>',lambda m:'<nav class="nav" id="nav">'+nav+'</nav>',page,count=1,flags=re.S)
               cards=''.join(f'<li>{html.escape(v)}</li>' for v in items.split('|'))
               body=f'<main class="zb-inner-page"><section class="subhero zb-inner-hero"><div class="wrap"><div class="eyebrow">ZABIELOS / B2B SECTORS</div><h1>{html.escape(title)}</h1><p>{html.escape(description)}</p></div></section><section class="section zb-sector-detail"><div class="wrap"><div class="zb-sector-detail-top"><img src="{photos[i].replace("&","&amp;")}" alt="{html.escape(title)}" loading="lazy"><div><h2>{html.escape(products)}</h2><ul>{cards}</ul></div></div><div class="zb-sector-quote"><div><h2>{html.escape(ask)}</h2><p>{html.escape(questions)}</p><p class="note">{html.escape(note)}</p></div><a class="btn" href="../../contact/">{html.escape(navs[lang][-1])} →</a></div></div></section></main>'
-              page=re.sub(r'<main[^>]*>.*?</main>',lambda m:body,page,count=1,flags=re.S)
+              start=page.find('<main')
+              end=page.find('</main>',start)
+              if start<0 or end<0:raise RuntimeError('Main section not found: '+str(path))
+              page=page[:start]+body+page[end+7:]
               path.write_text(page,encoding='utf-8')
             for rel in ('index.html','commerce/index.html'):
               p=Path(lang)/rel
@@ -101,7 +104,7 @@ jobs:
               p=Path(lang)/'commerce'/slug/'index.html'
               assert p.exists(),p
               s=p.read_text()
-              print('CHECK',p,'ul',('<ul>' in s),'quote',('zb-sector-quote' in s),'main',s.count('<main'))
+              assert '<ul>' in s and 'zb-sector-quote' in s,p
             for rel in ('index.html','commerce/index.html'):
               s=(Path(lang)/rel).read_text()
               for slug in slugs:assert slug+'/' in s,(lang,rel,slug)
