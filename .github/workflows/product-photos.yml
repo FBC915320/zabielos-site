@@ -40,7 +40,7 @@ jobs:
               for src in urls:
                 if src.startswith('//'):src='https:'+src
                 if not src.startswith('https://'):continue
-                if not (urlparse(src).hostname or '').endswith('cikala.com.br'):continue
+                if not (urlparse(src).hostname or ''):continue
                 data=urllib.request.urlopen(urllib.request.Request(src,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read()
                 im=Image.open(io.BytesIO(data)).convert('RGB')
                 if min(im.size)<250:continue
