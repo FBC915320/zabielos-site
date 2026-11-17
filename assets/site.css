@@ -235,3 +235,28 @@ body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI"
 @media(max-width:900px){.zb-site-header .headrow{min-height:75px}.zb-site-header .zb-logo-link{flex:0 0 180px;max-width:180px}.zb-site-header .logo{max-width:180px}.zb-site-header .nav{display:none}.zb-site-header .nav.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;background:white;padding:18px 26px;box-shadow:0 14px 28px #09273d20;z-index:30;gap:8px}.zb-site-header .hamb{display:block}.zb-site-header .lang{margin-left:auto}.zb-premium-bottom-inner{flex-wrap:wrap}.zb-premium-bottom p{flex:1 1 35%}}
 @media(max-width:600px){.zb-site-header .headrow{padding:12px 18px;gap:12px}.zb-site-header .zb-logo-link{flex-basis:145px;max-width:145px}.zb-site-header .logo{max-width:145px;max-height:52px}.zb-premium-hero>.wrap{min-height:480px;padding-top:55px;padding-bottom:55px}.zb-premium-hero h1{font-size:38px;padding-left:14px}.zb-premium-hero p{font-size:17px}.zb-premium-actions{flex-direction:column;gap:12px}.zb-premium-btn{min-width:0;width:100%}.zb-premium-services{margin-top:0}.zb-premium-services-inner{grid-template-columns:1fr;border-radius:0;box-shadow:none;padding-top:10px!important;padding-bottom:10px!important}.zb-premium-service{border-right:0;border-bottom:1px solid #e3eaed;padding:14px 0}.zb-premium-service:last-child{border-bottom:0}.zb-premium-section-heading{align-items:flex-start;flex-direction:column}.zb-premium-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.zb-premium-photo{height:135px}.zb-premium-card-label{padding:9px 7px;gap:5px;min-height:68px}.zb-premium-card-label strong{font-size:12px}.zb-premium-icon{font-size:19px}.zb-premium-arrow{width:19px;height:19px;font-size:14px}.zb-premium-bottom-inner{display:flex;gap:13px}.zb-premium-globe{display:none}.zb-premium-bottom h2{min-width:0}.zb-premium-bottom p{flex-basis:100%;margin:0}.zb-premium-bottom a{width:100%;text-align:center}}
 @media(prefers-reduced-motion:reduce){.zb-premium-card,.zb-premium-btn,.zb-premium-photo img{transition:none!important}}
+
+/* Premium unified layout across inner pages */
+.zb-inner-page{min-height:65vh}
+.zb-inner-hero{background:linear-gradient(95deg,rgba(4,29,53,.98),rgba(5,45,74,.88)),url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1500&q=70') center/cover no-repeat;padding:66px 0 70px}
+.zb-inner-hero .wrap,.zb-inner-cta .wrap{width:min(1350px,100%);padding-left:clamp(22px,4vw,55px);padding-right:clamp(22px,4vw,55px)}
+.zb-inner-hero .eyebrow{color:#a3ed14}
+.zb-inner-hero h1{font-size:clamp(38px,4.2vw,62px);line-height:1.08;max-width:1000px;letter-spacing:-.04em;margin:15px 0 12px;border-left:5px solid #a3ed14;padding-left:22px}
+.zb-inner-hero p{font-size:clamp(16px,1.6vw,20px);max-width:850px;line-height:1.5}
+.zb-inner-page .section{padding-top:65px;padding-bottom:70px}
+.zb-inner-page .card{border-radius:14px;box-shadow:0 7px 25px #08283e0d;transition:transform .2s,box-shadow .2s}
+.zb-inner-page .card:hover{transform:translateY(-3px);box-shadow:0 14px 32px #08283e20}
+.zb-inner-page .feature{border-radius:12px;background:#f1f6f5;padding:30px;border-left:5px solid #a3ed14}
+.zb-inner-page .form{border-radius:15px;background:#f7faf9;box-shadow:0 10px 35px #0b344110}
+.zb-inner-page .field input,.zb-inner-page .field textarea{background:white;border:1px solid #c6d5db}
+.zb-inner-page .btn{background:#a3ed14;color:#08233b;border-radius:10px}
+.zb-inner-page .note{background:#f5f9f6;border-radius:0 8px 8px 0}
+.zb-inner-cta{background:linear-gradient(105deg,#06223b,#0b4363);color:white;padding:35px 0}
+.zb-inner-cta .wrap{display:flex;justify-content:space-between;align-items:center;gap:30px}
+.zb-inner-cta h2{font-size:clamp(23px,2.7vw,34px);margin:0 0 8px}
+.zb-inner-cta p{margin:0;color:#d4e3e9}
+.zb-inner-cta a{display:inline-block;background:#a3ed14;border-radius:10px;padding:14px 25px;color:#06223b;font-weight:800;white-space:nowrap}
+.zb-inner-content .zb-premium-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.zb-service-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:900px){.zb-inner-content .zb-premium-grid,.zb-service-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.zb-inner-hero{padding:48px 0 52px}.zb-inner-hero h1{font-size:36px}.zb-inner-page .section{padding-top:40px;padding-bottom:45px}.zb-inner-content .zb-premium-grid,.zb-service-cards{grid-template-columns:1fr}.zb-inner-page .two{grid-template-columns:1fr;gap:22px}.zb-inner-cta .wrap{flex-direction:column;align-items:flex-start}.zb-inner-cta a{width:100%;text-align:center}}
