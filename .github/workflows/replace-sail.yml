@@ -1,37 +1,31 @@
-name: Replace Shade Sail image with clean product photography
+name: Prepare unbranded Shade Sail lifestyle crop
 on:
   push:
     paths: ['.github/workflows/replace-sail.yml']
 permissions:
   contents: write
 jobs:
-  replace:
+  crop:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m pip install --user pillow
-      - name: Select alternative official image
+      - name: Crop product application photo without packaging and logo
         run: |
           python3 - <<'PY'
-          import urllib.request,io
           from PIL import Image
-          base='https://www.cikala.com.br/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/s/a/'
-          for name in ['sail_2.png','sail_3.png','sail_4.png','sail_5.png','sail_2.jpg','sail_3.jpg']:
-            try:
-              r=urllib.request.urlopen(urllib.request.Request(base+name,headers={'User-Agent':'Mozilla/5.0'}),timeout=12)
-              im=Image.open(io.BytesIO(r.read())).convert('RGB')
-              if min(im.size)<400:continue
-              im.save('assets/products/shade-sail-alternative.webp','WEBP',quality=85)
-              print('SELECTED',name,im.size)
-              break
-            except Exception as e:print('UNAVAILABLE',name,str(e)[:80])
+          p='assets/products/shade-sail.webp'
+          im=Image.open(p).convert('RGB')
+          w,h=im.size
+          im=im.crop((int(w*.50),int(h*.235),int(w*.81),int(h*.52)))
+          im=im.resize((1000,900),Image.Resampling.LANCZOS)
+          im.save(p,'WEBP',quality=88,method=6)
+          print('Cropped clean product scene',im.size)
           PY
-      - name: Commit candidate for review
+      - name: Commit corrected product image
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/products/shade-sail-alternative.webp || true
-          if ! git diff --cached --quiet; then
-            git commit -m "Add alternative Shade Sail photo for visual review"
-            git push
-          fi
+          git add assets/products/shade-sail.webp
+          git commit -m "Use clean Shade Sail application photo without packaging or CIKALA logo"
+          git push
