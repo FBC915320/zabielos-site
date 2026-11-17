@@ -18,7 +18,7 @@ jobs:
           page='https://www.cikala.com.br/lona-de-caminh-o-cinza-x-preta-emborrachada-ck600-micras-a-soluc-o-perfeita-para-protec-o-e-transporte-seguro'
           request=urllib.request.Request(page,headers={'User-Agent':'Mozilla/5.0'})
           content=urllib.request.urlopen(request,timeout=35).read().decode('utf-8','ignore')
-          tags=re.findall(r'<meta\\s+[^>]*>',content,re.I)
+          tags=re.findall(r'<meta\s+[^>]*>',content,re.I)
           urls=[]
           for tag in tags:
             if 'itemprop="image"' in tag or 'og:image' in tag:
