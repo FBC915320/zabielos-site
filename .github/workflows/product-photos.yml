@@ -13,6 +13,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+      - name: Install image optimizer
+        run: python3 -m pip install --user pillow
       - name: Download and optimize official public product photos
         run: |
           python3 - <<'PY'
