@@ -51,3 +51,16 @@ body{font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
 
 /* Separate companies from product lines in B2B representation */
 .company-showcase{grid-template-columns:repeat(2,minmax(0,1fr))}.brand-product-line{display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:center;border-top:1px solid var(--line);margin-top:50px;padding-top:34px}.brand-product-line img{width:100%;aspect-ratio:1.5;object-fit:cover;border-radius:12px}.brand-product-line small{color:#639530;font-weight:800}.brand-product-line h3{margin:8px 0}.brand-product-line a{color:#337034;font-weight:800}@media(max-width:790px){.company-showcase{grid-template-columns:1fr}.brand-product-line{grid-template-columns:1fr}}
+
+/* Official brand logos: never crop or stretch */
+.official-brand-logo{display:flex;align-items:center;justify-content:flex-start;background:#fff;border:1px solid #e5e9eb;border-radius:10px;padding:12px;margin-bottom:12px;min-height:90px}
+.official-brand-logo img{display:block;max-width:100%;width:auto;height:auto;max-height:76px;object-fit:contain}
+.official-sail-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:12px;padding:14px;margin-bottom:18px}
+.official-sail-logo img{width:auto;max-width:100%;height:auto;max-height:140px;object-fit:contain}
+.brand-logo-overlay{position:absolute;top:12px;left:12px;z-index:2;background:#fff;border-radius:9px;padding:9px;width:min(55%,190px);box-shadow:0 3px 12px #0a253326}
+.brand-logo-overlay img{position:static!important;display:block;width:100%;height:auto!important;max-height:76px;object-fit:contain!important;opacity:1!important;transform:none!important}
+.shade-sail-logo-home{display:inline-flex;background:#fff;border:1px solid #e5e9eb;border-radius:9px;padding:12px;margin-top:22px}
+.shade-sail-logo-home img{width:170px;height:auto;object-fit:contain}
+.brand-detail-logo{display:inline-flex;background:#fff;border-radius:10px;padding:14px;margin-bottom:20px}
+.brand-detail-logo img{max-width:min(300px,70vw);width:auto;height:auto;max-height:130px;object-fit:contain}
+@media(max-width:550px){.brand-logo-overlay{width:49%}.official-brand-logo img{max-height:66px}}
