@@ -22,7 +22,7 @@ jobs:
           urls=[]
           for tag in tags:
             if 'itemprop="image"' in tag or 'og:image' in tag:
-              m=re.search(r'content=["\\']([^"\\']+)["\\']',tag)
+              m=re.search(r'content="([^"]+)"',tag)
               if m:urls.append(html.unescape(m.group(1)))
           print('Image URLs',urls)
           for url in urls[::-1]:
