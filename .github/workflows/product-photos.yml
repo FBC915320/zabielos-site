@@ -33,6 +33,7 @@ jobs:
               body=urllib.request.urlopen(req,timeout=25).read().decode('utf-8','ignore')
               print('DEBUG',key,'html_size',len(body),'jpgs',re.findall(r'https?://[^\\s\\\"<>]+?\\.(?:jpg|png|webp)',body,re.I)[:6])
               meta=re.findall(r'<meta\s+[^>]*>',body,re.I)
+              print('META',key,[x[:250] for x in meta if 'image' in x.lower()][:8])
               urls=[]
               for tag in meta:
                 if re.search(r'(?:og:image|twitter:image)',tag,re.I):
