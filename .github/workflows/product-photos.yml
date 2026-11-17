@@ -31,6 +31,7 @@ jobs:
             try:
               req=urllib.request.Request(page,headers={'User-Agent':'Mozilla/5.0'})
               body=urllib.request.urlopen(req,timeout=25).read().decode('utf-8','ignore')
+              print('DEBUG',key,'html_size',len(body),'jpgs',re.findall(r'https?://[^\\s\\\"<>]+?\\.(?:jpg|png|webp)',body,re.I)[:6])
               meta=re.findall(r'<meta\s+[^>]*>',body,re.I)
               urls=[]
               for tag in meta:
