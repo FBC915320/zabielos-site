@@ -47,5 +47,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   const prefix=location.pathname.includes('/zabielos-site/')?'/zabielos-site/':'/';
   const base=prefix+'assets/';
   section.innerHTML='<div class="wrap"><h2>'+copy.heading+'</h2><div class="zb-shade-gallery">'+entries.map(([title,description,filename])=>'<article class="zb-shade-card"><div class="zb-shade-photo '+(isNets?'':'zb-sail-photo')+'"><img loading="lazy" decoding="async" src="'+base+'products/'+filename+'" alt="'+title+'"></div><div><h3>'+title+'</h3><p>'+description+'</p></div></article>').join('')+'</div><div class="zb-shade-detail"><h3>'+details.title+'</h3><ul>'+details.points.map(point=>'<li>'+point+'</li>').join('')+'</ul><p>'+details.footer+'</p></div><p class="note">'+copy.note+'</p></div>';
-  document.querySelector('main .subhero')?.after(section);
+  const hero=document.querySelector('main .subhero');
+  if(!hero)return;
+  const mainTitle=hero.querySelector('h1');
+  const mainIntro=hero.querySelector('h1 + p');
+  if(mainTitle)mainTitle.textContent=details.title;
+  if(mainIntro)mainIntro.textContent=details.intro;
+  hero.after(section);
+  // Remove o bloco genérico da versão inicial para não repetir informações.
+  const obsolete=section.nextElementSibling;
+  if(obsolete?.classList.contains('section'))obsolete.remove();
 });
