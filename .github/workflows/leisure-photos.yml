@@ -20,7 +20,8 @@ jobs:
             'pool-protection':'https://www.cikala.com.br/capa-para-piscina-ck300-micras-protec-o-sujeira-com-kit-instalac-o/',
             'pool-safety':'https://www.cikala.com.br/capa-seguranca-de-piscina-6-5x3-5-metros-ck500-kit-fixac-o',
             'pool-thermal':'https://www.cikala.com.br/capa-termica-para-piscina-m-300-micras',
-            'leisure-mat':'https://www.cikala.com.br/casa-e-lazer/colchonetes'
+            'leisure-mat':'https://www.cikala.com.br/casa-e-lazer/colchonetes',
+            'gazebo':'https://www.cikala.com.br/tenda-gazebo-articulado-branca-3x3-m-eleve-seus-momentos-ao-ar-livre-com-o-gazebo-articulado-de-alta-qualidade'
           }
           d=Path('assets/leisure');d.mkdir(parents=True,exist_ok=True)
           sess=requests.Session()
