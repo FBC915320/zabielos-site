@@ -140,6 +140,7 @@ jobs:
           """)
           print('Updated',count,'service pages and all multilingual menus')
           PY
+          python3 /tmp/services.py
       - name: Validate every page and service dropdown
         run: |
           python3 - <<'PY'
