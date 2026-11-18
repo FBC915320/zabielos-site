@@ -195,6 +195,7 @@ jobs:
               ET.SubElement(n,'{'+XNS+'}link',{'rel':'alternate','hreflang':'x-default','href':BASE+'en/'+part})
           ET.ElementTree(root).write('sitemap.xml',encoding='utf-8',xml_declaration=True)
           PY
+          python3 /tmp/leisure.py
       - name: Validate new site navigation, safe images and copy
         run: |
           python3 - <<'PY'
