@@ -33,11 +33,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     it:{nets:['Reti ombreggianti Shade','Reti in polietilene per giardini, vivai, agricoltura e aree ricreative. Richiedete percentuali di ombreggiamento, colori, larghezze, finiture e fornitura in rotoli o su misura.','Dettaglio della rete ombreggiante','Rete ombreggiante con finitura rinforzata; specifiche e fissaggi sono da confermare in fase di preventivo.'],sails:['Vele ombreggianti Shade Sail','Vele tese per giardini, terrazze, piscine, hotel e spazi commerciali. Forme, tessuti, colori, misure e accessori personalizzati secondo il progetto.','Kit vela ombreggiante','Esempio di vela tesa e accessori; l’installazione dipende da dimensioni e punti di ancoraggio.'],heading:'Prodotti per la distribuzione internazionale',note:'Immagini illustrative senza loghi. Origine, produttore, disponibilità e prestazioni tecniche da confermare.'}
   }[lang];
   const isNets=category==='shade-nets';
-  const entries=isNets?[[copy.nets[0],copy.nets[1],'tela-preta.webp'],[copy.nets[2],copy.nets[3],'tela-cinza.webp']]:[[copy.sails[0],copy.sails[1],'shade.webp']];
+  // Amostra real de trama Shade em bege areia, sem marca. Para Shade Sail,
+  // a foto mostra o tecido de referência, não uma instalação pronta.
+  const entries=isNets?[[copy.nets[0]+' — bege areia',copy.nets[1],'shade-sand.jpg']]:[[copy.sails[0]+' — bege areia',copy.sails[1]+' Amostra visual da textura e cor do tecido; formato e instalação são definidos no projeto.','shade-sand.jpg']];
   const section=document.createElement('section');
   section.className='section zb-shade-catalog';
   const prefix=location.pathname.includes('/zabielos-site/')?'/zabielos-site/':'/';
   const base=prefix+'assets/';
-  section.innerHTML='<div class="wrap"><h2>'+copy.heading+'</h2><div class="zb-shade-gallery">'+entries.map(([title,description,filename])=>'<article class="zb-shade-card"><img loading="lazy" decoding="async" src="'+base+(isNets?'logistics/':'products/')+filename+'" alt="'+title+'"><div><h3>'+title+'</h3><p>'+description+'</p></div></article>').join('')+'</div><p class="note">'+copy.note+'</p></div>';
+  section.innerHTML='<div class="wrap"><h2>'+copy.heading+'</h2><div class="zb-shade-gallery">'+entries.map(([title,description,filename])=>'<article class="zb-shade-card"><img loading="lazy" decoding="async" src="'+base+'products/'+filename+'" alt="'+title+'"><div><h3>'+title+'</h3><p>'+description+'</p></div></article>').join('')+'</div><p class="note">'+copy.note+'</p></div>';
   document.querySelector('main .subhero')?.after(section);
 });
