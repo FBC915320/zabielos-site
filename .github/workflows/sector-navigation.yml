@@ -1,0 +1,141 @@
+name: Publish accessible sector navigation menus
+on:
+  push:
+    paths:
+      - '.github/workflows/sector-navigation.yml'
+permissions:
+  contents: write
+jobs:
+  navigation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build multilingual dropdown navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, html
+          content={
+            "pt":{
+              "nav":["Início","Serviços","Setores","Sobre","Contato"],
+              "all_services":"Todos os serviços","all_sectors":"Todos os setores",
+              "services":[("Representação comercial","b2b-representation"),("Importação e exportação","import-export"),("Localização de fabricantes","manufacturer-sourcing"),("Pesquisa de mercado","market-research"),("Desenvolvimento de produtos","product-development")],
+              "sectors":[("Snacks, biscoitos e private label","food-consumer"),("Embalagens plásticas","packaging"),("Filmes e embalagens flexíveis","flexible-films"),("Transporte e logística","transport-logistics"),("Lazer e proteção","leisure-protection"),("Construção civil","construction")]},
+            "en":{
+              "nav":["Home","Services","Sectors","About","Contact"],
+              "all_services":"All services","all_sectors":"All sectors",
+              "services":[("Commercial representation","b2b-representation"),("Import and export","import-export"),("Manufacturer sourcing","manufacturer-sourcing"),("Market research","market-research"),("Product development","product-development")],
+              "sectors":[("Snacks, biscuits & private label","food-consumer"),("Plastic packaging","packaging"),("Films and flexible packaging","flexible-films"),("Transport and logistics","transport-logistics"),("Leisure and protection","leisure-protection"),("Construction","construction")]},
+            "es":{
+              "nav":["Inicio","Servicios","Sectores","Sobre","Contacto"],
+              "all_services":"Todos los servicios","all_sectors":"Todos los sectores",
+              "services":[("Representación comercial","b2b-representation"),("Importación y exportación","import-export"),("Búsqueda de fabricantes","manufacturer-sourcing"),("Investigación de mercado","market-research"),("Desarrollo de productos","product-development")],
+              "sectors":[("Snacks, galletas y marca propia","food-consumer"),("Envases plásticos","packaging"),("Películas y envases flexibles","flexible-films"),("Transporte y logística","transport-logistics"),("Ocio y protección","leisure-protection"),("Construcción","construction")]},
+            "it":{
+              "nav":["Home","Servizi","Settori","Chi siamo","Contatti"],
+              "all_services":"Tutti i servizi","all_sectors":"Tutti i settori",
+              "services":[("Rappresentanza commerciale","b2b-representation"),("Importazione ed esportazione","import-export"),("Ricerca produttori","manufacturer-sourcing"),("Ricerca di mercato","market-research"),("Sviluppo prodotti","product-development")],
+              "sectors":[("Snack, biscotti e private label","food-consumer"),("Imballaggi plastici","packaging"),("Film e imballaggi flessibili","flexible-films"),("Trasporti e logistica","transport-logistics"),("Tempo libero e protezione","leisure-protection"),("Edilizia","construction")]}
+          }
+          count=0
+          for lang,t in content.items():
+            for f in Path(lang).rglob('index.html'):
+              s=f.read_text(encoding='utf-8')
+              prefix="../"*len(f.parent.parts)
+              active="home" if f==Path(lang)/'index.html' else "services" if f.parts[1]=="services" else "sectors" if f.parts[1]=="commerce" else f.parts[1]
+              labels=t["nav"]
+              def navlink(section,label,target):
+                active_attr=' aria-current="page"' if active==section else ""
+                return f'<a href="{prefix}{lang}/{target}"{active_attr}>{html.escape(label)}</a>'
+              def dropdown(section,label,target,links,all_label):
+                base=f"{prefix}{lang}/{target}"
+                entries=''.join(f'<a href="{base}{slug}/">{html.escape(text)}</a>' for text,slug in links)
+                return (f'<div class="zb-nav-item zb-has-dropdown">'
+                        +navlink(section,label,target)
+                        +f'<button class="zb-submenu-toggle" type="button" aria-expanded="false" aria-label="{html.escape(label)}: menu" aria-controls="zb-menu-{section}"><span aria-hidden="true">⌄</span></button>'
+                        +f'<div class="zb-dropdown" id="zb-menu-{section}"><a class="zb-dropdown-all" href="{base}">{html.escape(all_label)} →</a>{entries}</div></div>')
+              markup='<nav class="nav" id="nav" aria-label="Main navigation">'
+              markup+=navlink('home',labels[0],'')
+              markup+=dropdown('services',labels[1],'services/',t["services"],t["all_services"])
+              markup+=dropdown('sectors',labels[2],'commerce/',t["sectors"],t["all_sectors"])
+              markup+=navlink('about',labels[3],'about/')
+              markup+=navlink('contact',labels[4],'contact/')
+              markup+='</nav>'
+              newer,n=re.subn(r'<nav\b[^>]*\bid="nav"[^>]*>.*?</nav>',lambda m:markup,s,count=1,flags=re.S)
+              if n!=1:raise RuntimeError('Navigation not found in '+str(f))
+              f.write_text(newer,encoding='utf-8')
+              count+=1
+          css=Path('assets/zabielos-clean.css')
+          css.write_text(css.read_text(encoding='utf-8')+"""
+          /* Navigation: accessible hover dropdown on desktop, click on mobile */
+          .zb-nav-item{display:flex;align-items:center;position:relative}
+          .zb-nav-item>a{display:inline-flex;align-items:center}
+          .zb-submenu-toggle{background:transparent;border:0;padding:9px 2px 9px 6px;cursor:pointer;font-size:20px;color:#253d4f;line-height:1}
+          .zb-has-dropdown>.zb-dropdown{display:none;position:absolute;top:100%;left:-15px;width:min(365px,calc(100vw - 30px));padding:12px;background:#fff;border:1px solid #dce6ea;border-radius:13px;box-shadow:0 18px 42px rgba(6,30,53,.19);z-index:80;white-space:normal}
+          .zb-has-dropdown:hover>.zb-dropdown,.zb-has-dropdown:focus-within>.zb-dropdown,.zb-has-dropdown.is-open>.zb-dropdown{display:grid;gap:1px}
+          .nav .zb-dropdown>a{display:block;border-bottom:0;padding:10px 13px!important;border-radius:7px;font-size:14px;font-weight:620;line-height:1.35;white-space:normal}
+          .nav .zb-dropdown>a:hover,.nav .zb-dropdown>a:focus-visible{background:#f1f7f2;color:#2e7427;text-decoration:none}
+          .nav .zb-dropdown>.zb-dropdown-all{font-weight:800;color:#2c7426;border-bottom:1px solid #e4ecec;border-radius:0;margin-bottom:5px;padding-bottom:13px!important}
+          .zb-submenu-toggle:focus-visible{outline:2px solid #80b92c;outline-offset:1px;border-radius:4px}
+          @media(max-width:930px){
+            .nav.open{max-height:calc(100vh - 76px);overflow:auto}
+            .nav .zb-nav-item{display:flex;width:100%;flex-wrap:wrap;justify-content:space-between}
+            .nav .zb-nav-item>a{flex:1}
+            .nav .zb-submenu-toggle{padding:9px 15px}
+            .zb-has-dropdown>.zb-dropdown{position:static;top:auto;left:auto;width:100%;box-shadow:none;border:0;border-left:3px solid #a3eb19;border-radius:0;padding:3px 0 7px 10px;display:none}
+            .zb-has-dropdown:hover>.zb-dropdown{display:none}
+            .zb-has-dropdown.is-open>.zb-dropdown,.zb-has-dropdown:focus-within.is-open>.zb-dropdown{display:grid}
+          }
+          """)
+          js=Path('assets/site.js')
+          js.write_text(js.read_text(encoding='utf-8')+"""
+          document.addEventListener('DOMContentLoaded',()=>{
+            const groups=[...document.querySelectorAll('.zb-has-dropdown')];
+            groups.forEach(group=>{
+              const toggle=group.querySelector('.zb-submenu-toggle');
+              if(!toggle)return;
+              toggle.addEventListener('click',()=>{
+                const shouldOpen=!group.classList.contains('is-open');
+                groups.forEach(g=>{g.classList.remove('is-open');const b=g.querySelector('.zb-submenu-toggle');if(b)b.setAttribute('aria-expanded','false')});
+                group.classList.toggle('is-open',shouldOpen);
+                toggle.setAttribute('aria-expanded',String(shouldOpen));
+              });
+            });
+            document.addEventListener('click',event=>{
+              if(groups.some(g=>g.contains(event.target)))return;
+              groups.forEach(g=>{g.classList.remove('is-open');const b=g.querySelector('.zb-submenu-toggle');if(b)b.setAttribute('aria-expanded','false')});
+            });
+            document.addEventListener('keydown',event=>{
+              if(event.key!=='Escape')return;
+              groups.forEach(g=>{g.classList.remove('is-open');const b=g.querySelector('.zb-submenu-toggle');if(b)b.setAttribute('aria-expanded','false')});
+            });
+          });
+          """)
+          print('Updated navigation in',count,'pages')
+          PY
+      - name: Validate navigation in every language and page
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for lang in ('pt','en','es','it'):
+            pages=list(Path(lang).rglob('index.html'))
+            assert len(pages)>=19,(lang,len(pages))
+            for p in pages:
+              h=p.read_text()
+              assert h.count('class="zb-dropdown"')==2,p
+              assert h.count('class="zb-submenu-toggle"')==2,p
+              for slug in ('food-consumer','packaging','flexible-films','transport-logistics','leisure-protection','construction'):
+                assert '/commerce/'+slug+'/' in h,p
+                assert (Path(lang)/'commerce'/slug/'index.html').exists(),(lang,slug)
+              for slug in ('b2b-representation','import-export','manufacturer-sourcing','market-research','product-development'):
+                assert (Path(lang)/'services'/slug/'index.html').exists(),(lang,slug)
+          print('Menu links and target pages verified in all four languages')
+          PY
+      - name: Commit navigation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pt en es it assets/site.js assets/zabielos-clean.css
+          git commit -m "Add hover sectors and services navigation across all multilingual pages"
+          git push
