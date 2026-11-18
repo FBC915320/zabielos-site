@@ -149,7 +149,7 @@ jobs:
             for slug in slugs:
               p=Path(lang)/'services'/slug/'index.html'
               html=p.read_text()
-              assert 'zb-service-detail-intro' in html and 'zb-service-detail-grid' in html,p
+              assert 'zb-service-detail-intro' in html and 'zb-service-detail-grid' in html,(p,html[html.find('<main'):html.find('<main')+700])
               assert 'zb-service-detail-cta' in html,p
             overview=(Path(lang)/'services/index.html').read_text()
             assert overview.count('class="zb-service-overview-card"')==5,lang
