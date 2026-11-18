@@ -122,3 +122,35 @@ textarea{min-height:115px}
 .zb-detail-knowledge h2{font-size:22px;margin:0 0 13px}
 .zb-detail-knowledge p{margin:0 0 12px;color:#4d6575}
 @media(max-width:700px){.zb-detail-knowledge{grid-template-columns:1fr}.zb-detail-knowledge section{padding:20px}}
+
+/* Logistics sector: four-category international B2B product showcase */
+.zb-logistics-page .section{padding:50px 0 65px}
+.zb-logistics-intro{display:flex;justify-content:space-between;align-items:end;gap:35px;margin-bottom:28px}
+.zb-logistics-intro h2{font-size:clamp(27px,3vw,39px);margin:5px 0 0;max-width:720px}
+.zb-logistics-intro>p{max-width:350px;color:#647585;font-size:13px}
+.zb-logistics-eyebrow{color:#528f21;letter-spacing:.16em;font-size:11px;font-weight:800}
+.zb-logistics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.zb-logistics-card{display:flex;flex-direction:column;min-width:0;background:white;border:1px solid #dce6ea;border-radius:15px;padding:23px;box-shadow:0 8px 24px #09283d0c}
+.zb-logistics-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.zb-logistics-index{font-size:12px;letter-spacing:.1em;font-weight:800;color:#579726}
+.zb-logistics-symbol{font-size:31px;line-height:1;color:#0c3855}
+.zb-logistics-card h3{font-size:21px;margin:0 0 12px;min-height:50px}
+.zb-logistics-card>p{font-size:14px;color:#546b79;margin:0 0 16px}
+.zb-logistics-tags{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 18px}
+.zb-logistics-tags span{background:#eff6f1;border-radius:5px;padding:5px 8px;color:#346d2b;font-size:11px;font-weight:650}
+.zb-logistics-spec{border-top:1px solid #e2eaed;padding-top:15px}
+.zb-logistics-spec strong{font-size:12px}
+.zb-logistics-spec p{font-size:13px;color:#607583;margin:5px 0 0}
+.zb-logistics-applications{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;margin-top:35px;background:#f1f6f6;border-radius:15px;overflow:hidden}
+.zb-logistics-applications>div:first-child{padding:30px}
+.zb-logistics-applications h2{font-size:27px;margin:0 0 18px}
+.zb-logistics-applications ul{margin:0;padding-left:20px;line-height:2}
+.zb-logistics-applications li::marker{color:#60a526}
+.zb-logistics-hero-image img{width:100%;height:100%;min-height:260px;object-fit:cover;display:block}
+.zb-logistics-quote{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:30px;padding:30px;border-radius:15px;background:linear-gradient(110deg,#08253e,#0d4565);color:white}
+.zb-logistics-quote h2{margin:0 0 10px;font-size:28px}
+.zb-logistics-quote p{color:#dce8ec;max-width:850px;margin:0 0 10px}
+.zb-logistics-quote .zb-logistics-safety{font-size:12px;color:#bdd4df}
+.zb-logistics-quote .btn{white-space:nowrap}
+@media(max-width:1100px){.zb-logistics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zb-logistics-card h3{min-height:0}}
+@media(max-width:650px){.zb-logistics-intro{flex-direction:column;align-items:start}.zb-logistics-grid{grid-template-columns:1fr}.zb-logistics-applications{grid-template-columns:1fr}.zb-logistics-hero-image img{max-height:220px}.zb-logistics-quote{flex-direction:column;align-items:stretch;padding:22px}.zb-logistics-quote .btn{text-align:center;white-space:normal}}
