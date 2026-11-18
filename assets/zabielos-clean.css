@@ -174,3 +174,18 @@ textarea{min-height:115px}
   .zb-has-dropdown:hover>.zb-dropdown{display:none}
   .zb-has-dropdown.is-open>.zb-dropdown,.zb-has-dropdown:focus-within.is-open>.zb-dropdown{display:grid}
 }
+
+/* Real product photography — logistics category */
+.zb-logistics-product-group{margin:0 0 46px}
+.zb-logistics-product-group>h2{font-size:clamp(26px,2.8vw,36px);margin:0 0 18px;border-left:5px solid #a3eb19;padding-left:16px}
+.zb-logistics-product-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.zb-product-photo-card{background:#fff;border:1px solid #dfe8ed;border-radius:14px;overflow:hidden;box-shadow:0 8px 23px rgba(8,35,54,.07)}
+.zb-product-photo-card>img{width:100%;height:205px;object-fit:contain;display:block;background:#f9fbfc}
+.zb-product-photo-copy{padding:16px 18px 21px}
+.zb-product-photo-copy h3{font-size:18px;margin:0 0 10px}
+.zb-product-photo-copy p{font-size:14px;line-height:1.5;color:#566b78;margin:0}
+.zb-logistics-source-note{padding:28px;display:flex;flex-direction:column;justify-content:center}
+.zb-logistics-source-note h3{font-size:17px}
+.zb-logistics-source-note p{font-size:14px;color:#576c79}
+@media(max-width:1100px){.zb-logistics-product-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.zb-logistics-product-gallery{grid-template-columns:1fr}.zb-product-photo-card>img{height:260px}}
