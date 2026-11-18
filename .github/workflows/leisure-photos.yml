@@ -1,0 +1,62 @@
+name: Stage official leisure photographs from CIKALA
+on:
+  push:
+    paths: ['.github/workflows/leisure-photos.yml']
+permissions:
+  contents: write
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user pillow beautifulsoup4 requests
+      - name: Retrieve authentic unbranded product images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import requests,bs4,io
+          from PIL import Image
+          sources={
+            'pool-protection':'https://www.cikala.com.br/capa-para-piscina-ck300-micras-protec-o-sujeira-com-kit-instalac-o/',
+            'pool-safety':'https://www.cikala.com.br/capa-seguranca-de-piscina-6-5x3-5-metros-ck500-kit-fixac-o',
+            'pool-thermal':'https://www.cikala.com.br/capa-termica-para-piscina-m-300-micras',
+            'leisure-mat':'https://www.cikala.com.br/casa-e-lazer/colchonetes'
+          }
+          d=Path('assets/leisure');d.mkdir(parents=True,exist_ok=True)
+          sess=requests.Session()
+          sess.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/125.0 Safari/537.36'})
+          for name,url in sources.items():
+            try:
+              r=sess.get(url,timeout=35);r.raise_for_status()
+              soup=bs4.BeautifulSoup(r.text,'html.parser')
+              imgs=[]
+              for m in soup.find_all('meta'):
+                if m.get('property') in ('og:image','og:image:secure_url') or m.get('itemprop')=='image':
+                  if m.get('content'):imgs.append(m['content'])
+              for tag in soup.select('img.product-image-photo, img[itemprop=image], .product-image img, .products-grid img'):
+                v=tag.get('data-src') or tag.get('src')
+                if v:imgs.append(v)
+              if not imgs:
+                print('NO_SOURCE',name,url,flush=True)
+                continue
+              for src in imgs:
+                if src.startswith('//'):src='https:'+src
+                if not src.startswith('https://www.cikala.com.br/media/catalog/product/'):continue
+                try:
+                  r=sess.get(src,timeout=35);r.raise_for_status()
+                  im=Image.open(io.BytesIO(r.content)).convert('RGB')
+                  if min(im.size)<370:continue
+                  im.thumbnail((1200,1200),Image.Resampling.LANCZOS)
+                  im.save(d/(name+'.webp'),'WEBP',quality=86,method=6)
+                  print('SAVED',name,im.size,src,flush=True)
+                  break
+                except Exception as exc:print('IMAGE_ERROR',name,str(exc)[:100],flush=True)
+              else:print('NO_VALID_IMAGE',name,url,flush=True)
+            except Exception as exc:print('ERROR',name,str(exc)[:150],flush=True)
+          PY
+      - name: Commit only retrieved originals
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/leisure
+          if ! git diff --cached --quiet; then git commit -m "Stage original leisure and pool product photographs from CIKALA"; git push; fi
