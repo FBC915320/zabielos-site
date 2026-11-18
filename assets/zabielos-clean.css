@@ -220,3 +220,4 @@ textarea{min-height:115px}
 .zb-service-detail-cta .btn{white-space:nowrap}
 @media(max-width:980px){.zb-services-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.zb-services-overview-grid,.zb-service-detail-intro,.zb-service-detail-grid{grid-template-columns:1fr}.zb-service-detail-cta{flex-direction:column;align-items:stretch}.zb-service-detail-cta .btn{text-align:center}.zb-service-overview-card{padding:22px}}
+.zb-shade-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:24px;margin:24px 0}.zb-shade-card{overflow:hidden;border:1px solid #dde4e8;border-radius:16px;background:#fff}.zb-shade-card img{display:block;width:100%;height:280px;object-fit:cover}.zb-shade-card div{padding:20px}.zb-shade-card h3{margin:0 0 10px}.zb-shade-card p{margin:0;line-height:1.6}
