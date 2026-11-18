@@ -33,6 +33,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   }[lang];
   const mission=document.querySelector('main .subhero + .section');
   if(!mission)return;
+  const image=document.createElement('figure');
+  image.className='wrap zb-about-image';
+  const root=location.pathname.includes('/zabielos-site/')?'/zabielos-site/':'/';
+  image.innerHTML='<img src="'+root+'assets/about-global-trade.webp" alt="'+({pt:'Navio de carga e contêineres em porto internacional, imagem ilustrativa',en:'Cargo ship and containers at an international port, illustrative image',es:'Buque de carga y contenedores en un puerto internacional, imagen ilustrativa',it:'Nave cargo e container in un porto internazionale, immagine illustrativa'}[lang])+'" width="1599" height="900" loading="eager" decoding="async"><figcaption>'+({pt:'Conexões comerciais entre mercados • Imagem ilustrativa',en:'Trade connections across markets • Illustrative image',es:'Conexiones comerciales entre mercados • Imagen ilustrativa',it:'Collegamenti commerciali tra mercati • Immagine illustrativa'}[lang])+'</figcaption>';
+  mission.before(image);
   const block=document.createElement('section');block.className='section zb-about-process';
   block.innerHTML='<div class="wrap"><h2>'+content.heading+'</h2><div class="zb-about-steps">'+content.steps.map(([title,description])=>'<article><h3>'+title+'</h3><p>'+description+'</p></article>').join('')+'</div><p class="note">'+content.note+'</p></div>';
   mission.after(block);
