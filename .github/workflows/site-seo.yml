@@ -94,7 +94,7 @@ jobs:
             }
           }
           files={l:sorted(Path(l).rglob('index.html')) for l in langs}
-          all_rel={l:{str(p.relative_to(Path(l)).parent).replace('\\','/'):p for p in ps} for l,ps in files.items()}
+          all_rel={l:{('' if str(p.relative_to(Path(l)).parent)=='.' else p.relative_to(Path(l)).parent.as_posix()):p for p in ps} for l,ps in files.items()}
           def segment(p,l):
             rel=p.relative_to(Path(l)).parent
             return '' if str(rel)=='.' else rel.as_posix().strip('/')+'/'
