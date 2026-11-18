@@ -1,0 +1,228 @@
+name: Replace construction sector with leisure and pools
+on:
+  push:
+    paths: ['.github/workflows/leisure-sector.yml']
+permissions:
+  contents: write
+jobs:
+  leisure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user Pillow
+      - name: Prepare logo-free crops of genuine leisure products
+        run: |
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          root=Path('assets/leisure')
+          crops={
+            'pool-cover-clean':('pool-protection',(740,390,1190,870)),
+            'pool-safety-clean':('pool-safety',(450,75,1125,700)),
+            'pool-thermal-clean':('pool-thermal',None),
+            'gazebo-clean':('gazebo',(0,0,370,475))
+          }
+          for target,(source,box) in crops.items():
+            with Image.open(root/(source+'.webp')) as original:
+              im=original.convert('RGB')
+              if box:im=im.crop(box)
+              im.thumbnail((1100,900),Image.Resampling.LANCZOS)
+              assert min(im.size)>250,(target,im.size)
+              im.save(root/(target+'.webp'),'WEBP',quality=87,method=6)
+              print('PREPARED',target,im.size)
+          PY
+      - name: Replace sector cards, menus, pages, SEO and sitemap
+        run: |
+          cat > /tmp/leisure.py <<'PY'
+          from pathlib import Path
+          import re,html,json,xml.etree.ElementTree as ET
+          BASE='https://fbc915320.github.io/zabielos-site/'
+          content={
+            'pt':{
+              'new':'Lazer e piscinas','oldnew':'Sombreamento e proteção','intro':'Capas para piscinas, coberturas térmicas, proteção para áreas de lazer e gazebos. Soluções para distribuidores e compradores B2B.',
+              'cardtext':'Capas, piscinas, acessórios e gazebos','shadow':'Telas e coberturas de sombreamento para áreas externas.',
+              'products':[
+                ('Capas de proteção para piscinas','Lonas de polietileno para reduzir a entrada de folhas, poeira e sujeira. Modelos sob medida e acessórios de fixação sujeitos à consulta.','pool-cover-clean'),
+                ('Capas de segurança para piscinas','Coberturas de PVC reforçado e sistemas de fixação conforme dimensões e especificações. Verifique requisitos de segurança aplicáveis ao projeto.','pool-safety-clean'),
+                ('Capas térmicas para piscinas','Mantas térmicas com estrutura de bolhas para auxiliar na retenção de calor e na redução da evaporação da água.','pool-thermal-clean'),
+                ('Gazebos e proteção externa','Tendas articuladas e paredes laterais para lazer, eventos, jardins e espaços externos, conforme modelos disponíveis.','gazebo-clean')
+              ],
+              'uses':['Piscinas residenciais, condomínios e clubes','Revendas de produtos para piscinas e áreas externas','Jardins, eventos, praias e áreas recreativas','Distribuidores de coberturas e acessórios'],
+              'for':'Aplicações e compradores','ask':'Informações para cotação','rfq':'Informe categoria de produto, medidas, formato, material, espessura, cor, acessórios, quantidades, país de destino e finalidade de uso.',
+              'caution':'Capas térmicas, capas de proteção e capas de segurança têm funções diferentes. Não presuma capacidade de suportar peso nem segurança contra quedas sem avaliação técnica e certificação aplicável.',
+              'cta':'Solicitar informações','note':'Fotografias originais de produtos, sem logotipos. A apresentação é comercial; preços, disponibilidade e condições devem ser confirmados.',
+              'seo':'Capas para piscinas, capas térmicas e de segurança, gazebos, coberturas e acessórios para lazer em fornecimento B2B.'},
+            'en':{
+              'new':'Leisure and pools','oldnew':'Shading and protection','intro':'Swimming pool covers, thermal blankets, outdoor leisure protection and gazebos for distributors and B2B buyers.',
+              'cardtext':'Pool covers, accessories and gazebos','shadow':'Shade nets and tensioned covers for outdoor areas.',
+              'products':[
+                ('Swimming pool protection covers','Polyethylene sheets for protecting pools from leaves, dust and dirt. Custom sizing and fittings subject to quotation.','pool-cover-clean'),
+                ('Pool safety covers','Reinforced PVC covers and fastening systems according to dimensions and technical requirements.','pool-safety-clean'),
+                ('Thermal pool covers','Bubble-texture thermal blankets designed to help retain water temperature and reduce evaporation.','pool-thermal-clean'),
+                ('Gazebos and outdoor protection','Pop-up gazebos and side panels for leisure, events, gardens and outdoor areas.','gazebo-clean')
+              ],
+              'uses':['Residential pools, clubs and condominiums','Pool product retailers and distributors','Gardens, events and recreation areas','Distributors of outdoor covers and accessories'],
+              'for':'Applications and buyers','ask':'Quotation requirements','rfq':'Specify product category, dimensions, shape, material, thickness, color, accessories, quantities, destination and intended use.',
+              'caution':'Thermal, protection and safety covers serve different purposes. Do not assume load-bearing or fall-protection capacity without technical verification and applicable certifications.',
+              'cta':'Request information','note':'Genuine product photography without logos. Pricing, supply and terms require confirmation.',
+              'seo':'Swimming pool covers, thermal blankets, safety covers, gazebos and leisure accessories for B2B sourcing.'},
+            'es':{
+              'new':'Ocio y piscinas','oldnew':'Sombreo y protección','intro':'Cubiertas para piscinas, mantas térmicas, protección de espacios de ocio y gazebos para distribuidores y compradores B2B.',
+              'cardtext':'Cubiertas de piscina, accesorios y gazebos','shadow':'Mallas y cubiertas de sombreo para exteriores.',
+              'products':[
+                ('Cubiertas de protección para piscinas','Lonas de polietileno para reducir suciedad, hojas y polvo. Medidas y fijación sujetas a consulta.','pool-cover-clean'),
+                ('Cubiertas de seguridad para piscinas','Cubiertas de PVC reforzado y fijaciones según dimensiones y requisitos técnicos.','pool-safety-clean'),
+                ('Mantas térmicas para piscinas','Cubiertas térmicas con burbujas para ayudar a retener el calor y reducir la evaporación.','pool-thermal-clean'),
+                ('Gazebos y protección exterior','Carpas plegables y cerramientos laterales para ocio, eventos y jardines.','gazebo-clean')
+              ],
+              'uses':['Piscinas residenciales, clubes y condominios','Revendedores y distribuidores para piscinas','Jardines, eventos y zonas recreativas','Distribuidores de coberturas y accesorios'],
+              'for':'Aplicaciones y clientes','ask':'Información para cotizar','rfq':'Indique categoría, medidas, forma, material, espesor, color, accesorios, cantidad, destino y aplicación.',
+              'caution':'Las cubiertas térmicas, de protección y de seguridad tienen funciones diferentes. No se debe presumir resistencia al peso sin verificación técnica.',
+              'cta':'Solicitar información','note':'Fotografías originales sin logos. Precio, disponibilidad y condiciones sujetos a confirmación.',
+              'seo':'Cubiertas para piscinas, mantas térmicas, cubiertas de seguridad, gazebos y accesorios de ocio B2B.'},
+            'it':{
+              'new':'Tempo libero e piscine','oldnew':'Ombreggiamento e protezione','intro':'Coperture per piscine, teli termici, protezione per aree ricreative e gazebo per distributori e acquirenti B2B.',
+              'cardtext':'Coperture piscine, accessori e gazebo','shadow':'Reti e coperture ombreggianti per spazi esterni.',
+              'products':[
+                ('Coperture protettive per piscine','Teloni in polietilene contro foglie, polvere e sporco. Dimensioni e fissaggi da verificare.','pool-cover-clean'),
+                ('Coperture di sicurezza per piscine','Coperture in PVC rinforzato e sistemi di fissaggio secondo le specifiche tecniche.','pool-safety-clean'),
+                ('Coperture termiche per piscine','Teli termici a bolle per ridurre l’evaporazione e aiutare a trattenere il calore.','pool-thermal-clean'),
+                ('Gazebo e protezione esterna','Gazebo pieghevoli e pareti laterali per giardini, eventi e aree ricreative.','gazebo-clean')
+              ],
+              'uses':['Piscine private, condomini e club','Rivenditori e distributori piscine','Giardini, eventi e spazi ricreativi','Distributori di coperture e accessori'],
+              'for':'Applicazioni e clienti','ask':'Informazioni per il preventivo','rfq':'Specificare tipo, dimensioni, forma, materiale, spessore, colore, accessori, quantità, destinazione e uso.',
+              'caution':'Coperture termiche, protettive e di sicurezza hanno funzioni diverse. Non presumere la portata o la prevenzione cadute senza verifica tecnica.',
+              'cta':'Richiedi informazioni','note':'Fotografie originali senza marchi. Prezzi, disponibilità e condizioni da confermare.',
+              'seo':'Coperture per piscine, teli termici, coperture di sicurezza, gazebo e accessori per il tempo libero B2B.'}
+          }
+          def esc(x):return html.escape(x,quote=True)
+          for lang,t in content.items():
+            page=Path(lang)/'commerce'/'construction'/'index.html'
+            template=page.read_text()
+            cards=''.join('<article class="zb-product-photo-card"><img src="../../../assets/leisure/'+p[2]+'.webp" alt="'+esc(p[0])+'" loading="lazy" decoding="async"><div class="zb-product-photo-copy"><h3>'+esc(p[0])+'</h3><p>'+esc(p[1])+'</p></div></article>' for p in t['products'])
+            uses=''.join('<li>'+esc(x)+'</li>' for x in t['uses'])
+            body=(
+              '<main class="zb-inner-page"><section class="subhero zb-inner-hero"><div class="wrap"><div class="eyebrow">ZABIELOS / B2B</div><h1>'+esc(t['new'])+'</h1><p>'+esc(t['intro'])+'</p></div></section>'
+              '<section class="section"><div class="wrap"><div class="zb-logistics-product-group"><h2>'+esc(t['new'])+'</h2><div class="zb-logistics-product-gallery">'+cards+'</div></div>'
+              '<div class="zb-detail-knowledge"><section><h2>'+esc(t['for'])+'</h2><ul>'+uses+'</ul></section><section><h2>'+esc(t['ask'])+'</h2><p>'+esc(t['rfq'])+'</p></section></div>'
+              '<p class="note">'+esc(t['caution'])+'</p><div class="zb-logistics-quote"><div><h2>'+esc(t['ask'])+'</h2><p>'+esc(t['note'])+'</p></div><a class="btn" href="../../contact/">'+esc(t['cta'])+' →</a></div>'
+              '</div></section></main>'
+            )
+            start=template.find('<main');end=template.find('</main>',start)
+            assert start>=0 and end>start,page
+            template=template[:start]+body+template[end+7:]
+            template=re.sub(r'<title>.*?</title>',lambda _: '<title>'+esc(t['new'])+' | ZABIELOS</title>',template,count=1)
+            template=re.sub(r'<meta name="description" content="[^"]*"',lambda _: '<meta name="description" content="'+esc(t['seo'])+'"',template,count=1)
+            template=template.replace('commerce/construction/','commerce/leisure-pools/')
+            template=template.replace('assets/products/shade.webp','assets/leisure/pool-safety-clean.webp')
+            dest=Path(lang)/'commerce'/'leisure-pools'/'index.html'
+            dest.parent.mkdir(parents=True,exist_ok=True)
+            dest.write_text(template)
+            # Keep the old construction URL as a non-indexed, user-friendly redirect.
+            old=page.read_text()
+            prefix='../../../'
+            replacement='<main class="zb-inner-page"><section class="subhero zb-inner-hero"><div class="wrap"><h1>'+esc(t['new'])+'</h1><p>'+esc(t['intro'])+'</p><p><a class="btn" href="../leisure-pools/">'+esc(t['cta'])+' →</a></p></div></section></main>'
+            a=old.find('<main');b=old.find('</main>',a)
+            old=old[:a]+replacement+old[b+7:]
+            old=re.sub(r'<meta name="robots" content="[^"]*"', '<meta name="robots" content="noindex,follow"',old,count=1)
+            old=re.sub(r'<link rel="canonical" href="[^"]*"',lambda _: '<link rel="canonical" href="'+BASE+lang+'/commerce/leisure-pools/"',old,count=1)
+            old=old.replace('</head>','<meta http-equiv="refresh" content="0;url=../leisure-pools/"></head>',1)
+            page.write_text(old)
+            # Rename existing shade line in place, keeping its approved photographs.
+            shade=Path(lang)/'commerce'/'leisure-protection'/'index.html'
+            sh=shade.read_text()
+            current_h1=re.search(r'<h1[^>]*>.*?</h1>',sh,re.S)
+            if current_h1:sh=sh[:current_h1.start()]+'<h1>'+esc(t['oldnew'])+'</h1>'+sh[current_h1.end():]
+            sh=re.sub(r'<title>.*?</title>',lambda _: '<title>'+esc(t['oldnew'])+' | ZABIELOS</title>',sh,count=1)
+            shade.write_text(sh)
+            # Replace the sixth category in Home and Catalog, leaving other cards intact.
+            for rel in ('index.html','commerce/index.html'):
+              f=Path(lang)/rel
+              text=f.read_text()
+              prefix='../' if rel=='index.html' else '../../'
+              href='commerce/leisure-pools/' if rel=='index.html' else 'leisure-pools/'
+              n=0
+              def convert_card(match):
+                nonlocal_not_used=None
+                return match.group(0)
+              pattern=r'<a class="zb-premium-card" href="[^"]*">.*?</a>'
+              cards=list(re.finditer(pattern,text,re.S))
+              assert len(cards)>=6,(f,len(cards))
+              # Existing fifth card: shading, sixth card: leisure and pools.
+              fifth=cards[4]
+              fifth_text=fifth.group()
+              fifth_text=re.sub(r'(<strong>).*?(</strong>)',lambda m:m.group(1)+esc(t['oldnew'])+m.group(2),fifth_text,count=1,flags=re.S)
+              sixth=cards[5]
+              sixth_text=sixth.group()
+              sixth_text=re.sub(r'href="[^"]+"','href="'+href+'"',sixth_text,count=1)
+              sixth_text=re.sub(r'(<img src=")[^"]+',lambda m:m.group(1)+prefix+'assets/leisure/pool-safety-clean.webp',sixth_text,count=1)
+              sixth_text=re.sub(r'(<img[^>]+alt=")[^"]*',lambda m:m.group(1)+esc(t['new']),sixth_text,count=1)
+              sixth_text=re.sub(r'(<strong>).*?(</strong>)',lambda m:m.group(1)+esc(t['new'])+m.group(2),sixth_text,count=1,flags=re.S)
+              text=text[:sixth.start()]+sixth_text+text[sixth.end():]
+              text=text[:fifth.start()]+fifth_text+text[fifth.end():]
+              f.write_text(text)
+            # Update all menu links and names.
+            for f in Path(lang).rglob('index.html'):
+              text=f.read_text()
+              pat=r'(<div class="zb-dropdown" id="zb-menu-sectors">).*?(</div>)'
+              m=re.search(pat,text,re.S)
+              assert m,f
+              menu=m.group()
+              menu=re.sub(r'(<a href="[^"]*?/commerce/leisure-protection/">).*?(</a>)',lambda x:x.group(1)+esc(t['oldnew'])+x.group(2),menu)
+              menu=re.sub(r'(<a href="[^"]*?/commerce/construction/">).*?(</a>)',lambda x:x.group(1)+esc(t['new'])+x.group(2),menu)
+              menu=menu.replace('/commerce/construction/','/commerce/leisure-pools/')
+              text=text[:m.start()]+menu+text[m.end():]
+              f.write_text(text)
+            print('UPDATED',lang,'new leisure page, menu, shade name and cards')
+          # Rebuild the sitemap to include new pages and exclude construction redirect.
+          NS='http://www.sitemaps.org/schemas/sitemap/0.9'; XNS='http://www.w3.org/1999/xhtml'
+          ET.register_namespace('',NS);ET.register_namespace('xhtml',XNS)
+          root=ET.Element('{'+NS+'}urlset')
+          langs={'pt':'pt-BR','en':'en','es':'es','it':'it'}
+          pages={lang:sorted(Path(lang).rglob('index.html')) for lang in langs}
+          def rel(p,lang):
+            parent=p.relative_to(Path(lang)).parent
+            return '' if str(parent)=='.' else parent.as_posix().strip('/')+'/'
+          for lang,files in pages.items():
+            for file in files:
+              part=rel(file,lang)
+              if part=='commerce/construction/':continue
+              n=ET.SubElement(root,'{'+NS+'}url')
+              ET.SubElement(n,'{'+NS+'}loc').text=BASE+lang+'/'+part
+              for l,locale in langs.items():
+                if (Path(l)/part/'index.html').exists() if part else (Path(l)/'index.html').exists():
+                  ET.SubElement(n,'{'+XNS+'}link',{'rel':'alternate','hreflang':locale,'href':BASE+l+'/'+part})
+              ET.SubElement(n,'{'+XNS+'}link',{'rel':'alternate','hreflang':'x-default','href':BASE+'en/'+part})
+          ET.ElementTree(root).write('sitemap.xml',encoding='utf-8',xml_declaration=True)
+          PY
+      - name: Validate new site navigation, safe images and copy
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for lang in ('pt','en','es','it'):
+            p=Path(lang)/'commerce/leisure-pools/index.html'
+            h=p.read_text()
+            assert h.count('class="zb-product-photo-card"')==4,(p,'cards')
+            assert 'CIKALA' not in h.upper(),p
+            for name in ('pool-cover-clean','pool-safety-clean','pool-thermal-clean','gazebo-clean'):
+              assert (Path('assets/leisure')/(name+'.webp')).exists(),name
+            for rel in ('index.html','commerce/index.html'):
+              s=(Path(lang)/rel).read_text()
+              assert 'leisure-pools/' in s,(lang,rel)
+              assert 'construction/' not in s,(lang,rel)
+            for page in Path(lang).rglob('index.html'):
+              s=page.read_text()
+              assert '/commerce/leisure-pools/' in s,page
+              assert '/commerce/construction/' not in s or page.parts[2:]==('construction','index.html'),page
+          sitemap=Path('sitemap.xml').read_text()
+          assert 'commerce/leisure-pools/' in sitemap
+          assert 'commerce/construction/' not in sitemap
+          print('Validated 4 categories in each of 4 languages, navigation, image files and sitemap')
+          PY
+      - name: Publish sector replacement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pt en es it assets/leisure sitemap.xml
+          git commit -m "Replace construction with leisure and pool products across four languages"
+          git push
