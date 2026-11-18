@@ -21,6 +21,23 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 
+document.addEventListener('DOMContentLoaded',()=>{
+  const match=location.pathname.match(/\/(pt|en|es|it)\/about\/?$/);
+  if(!match)return;
+  const lang=match[1];
+  const content={
+    pt:{heading:'Como transformamos demandas em oportunidades',steps:[['1. Apresente sua necessidade','Informe o produto procurado, quantidade estimada, especificações e país de destino.'],['2. Avaliamos o fornecimento','Analisamos possíveis fabricantes, condições de produção, embalagem, documentação e logística.'],['3. Estruturamos o próximo passo','Com informações suficientes, verificamos a viabilidade de cotação, representação, distribuição ou marca própria.']],note:'A ZABIELOS atua na aproximação comercial e no desenvolvimento de oportunidades. Preços, disponibilidade e eventuais acordos dependem de confirmação.'},
+    en:{heading:'How we turn requirements into opportunities',steps:[['1. Tell us what you need','Specify product, estimated quantity, technical requirements and destination country.'],['2. We assess sourcing options','We examine potential manufacturers, production, packaging, documents and logistics.'],['3. We define the next step','We review the feasibility of sourcing, distribution, representation or private-label cooperation.']],note:'ZABIELOS develops international business opportunities. Pricing, availability and agreements require confirmation.'},
+    es:{heading:'Cómo convertimos necesidades en oportunidades',steps:[['1. Cuéntenos su necesidad','Indique producto, cantidad, especificaciones y país de destino.'],['2. Evaluamos el suministro','Revisamos fabricantes posibles, producción, embalaje, documentos y logística.'],['3. Definimos el siguiente paso','Analizamos la viabilidad de cotización, distribución, representación o marca privada.']],note:'ZABIELOS desarrolla oportunidades comerciales internacionales. Precios, disponibilidad y acuerdos requieren confirmación.'},
+    it:{heading:'Come trasformiamo le richieste in opportunità',steps:[['1. Descrivi la tua esigenza','Indica prodotto, quantità, specifiche tecniche e paese di destinazione.'],['2. Valutiamo la fornitura','Esaminiamo produttori, produzione, imballaggio, documenti e logistica.'],['3. Definiamo il prossimo passo','Verifichiamo la fattibilità di offerte, distribuzione, rappresentanza o private label.']],note:'ZABIELOS sviluppa opportunità commerciali internazionali. Prezzi, disponibilità e accordi sono da confermare.'}
+  }[lang];
+  const mission=document.querySelector('main .subhero + .section');
+  if(!mission)return;
+  const block=document.createElement('section');block.className='section zb-about-process';
+  block.innerHTML='<div class="wrap"><h2>'+content.heading+'</h2><div class="zb-about-steps">'+content.steps.map(([title,description])=>'<article><h3>'+title+'</h3><p>'+description+'</p></article>').join('')+'</div><p class="note">'+content.note+'</p></div>';
+  mission.after(block);
+});
+
 // Portfólio B2B: itens encontrados em catálogos comerciais recebidos,
 // apresentados sem marcas, sem preços e sem afirmar representação exclusiva.
 document.addEventListener('DOMContentLoaded',()=>{
@@ -41,6 +58,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   const preview=sectionName==='food-consumer'?'<img class="zb-product-portfolio-hero" loading="lazy" src="'+(location.pathname.includes('/zabielos-site/')?'/zabielos-site/':'/')+'assets/products/snacks-private-label.webp" alt="Assortimento ilustrativo de snacks em embalagens sem marca">':'';
   section.innerHTML='<div class="wrap"><h2>'+catalog.title+'</h2><p class="lead">'+catalog.intro+'</p>'+preview+'<div class="zb-product-portfolio-grid">'+items.map(([name,description])=>'<article class="zb-product-portfolio-item"><h3>'+name+'</h3><p>'+description+'</p></article>').join('')+'</div></div>';
   hero.after(section);
+  // Mantém as instruções de cotação, eliminando só a antiga lista resumida e
+  // sua fotografia genérica para evitar dois catálogos contraditórios.
+  section.nextElementSibling?.querySelector('.zb-sector-detail-top')?.remove();
 });
 
 // Catálogo B2B de sombreamento: fotografias existentes, sem marcas de fabricantes.
