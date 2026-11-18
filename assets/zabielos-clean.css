@@ -154,3 +154,23 @@ textarea{min-height:115px}
 .zb-logistics-quote .btn{white-space:nowrap}
 @media(max-width:1100px){.zb-logistics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zb-logistics-card h3{min-height:0}}
 @media(max-width:650px){.zb-logistics-intro{flex-direction:column;align-items:start}.zb-logistics-grid{grid-template-columns:1fr}.zb-logistics-applications{grid-template-columns:1fr}.zb-logistics-hero-image img{max-height:220px}.zb-logistics-quote{flex-direction:column;align-items:stretch;padding:22px}.zb-logistics-quote .btn{text-align:center;white-space:normal}}
+
+/* Navigation: accessible hover dropdown on desktop, click on mobile */
+.zb-nav-item{display:flex;align-items:center;position:relative}
+.zb-nav-item>a{display:inline-flex;align-items:center}
+.zb-submenu-toggle{background:transparent;border:0;padding:9px 2px 9px 6px;cursor:pointer;font-size:20px;color:#253d4f;line-height:1}
+.zb-has-dropdown>.zb-dropdown{display:none;position:absolute;top:100%;left:-15px;width:min(365px,calc(100vw - 30px));padding:12px;background:#fff;border:1px solid #dce6ea;border-radius:13px;box-shadow:0 18px 42px rgba(6,30,53,.19);z-index:80;white-space:normal}
+.zb-has-dropdown:hover>.zb-dropdown,.zb-has-dropdown:focus-within>.zb-dropdown,.zb-has-dropdown.is-open>.zb-dropdown{display:grid;gap:1px}
+.nav .zb-dropdown>a{display:block;border-bottom:0;padding:10px 13px!important;border-radius:7px;font-size:14px;font-weight:620;line-height:1.35;white-space:normal}
+.nav .zb-dropdown>a:hover,.nav .zb-dropdown>a:focus-visible{background:#f1f7f2;color:#2e7427;text-decoration:none}
+.nav .zb-dropdown>.zb-dropdown-all{font-weight:800;color:#2c7426;border-bottom:1px solid #e4ecec;border-radius:0;margin-bottom:5px;padding-bottom:13px!important}
+.zb-submenu-toggle:focus-visible{outline:2px solid #80b92c;outline-offset:1px;border-radius:4px}
+@media(max-width:930px){
+  .nav.open{max-height:calc(100vh - 76px);overflow:auto}
+  .nav .zb-nav-item{display:flex;width:100%;flex-wrap:wrap;justify-content:space-between}
+  .nav .zb-nav-item>a{flex:1}
+  .nav .zb-submenu-toggle{padding:9px 15px}
+  .zb-has-dropdown>.zb-dropdown{position:static;top:auto;left:auto;width:100%;box-shadow:none;border:0;border-left:3px solid #a3eb19;border-radius:0;padding:3px 0 7px 10px;display:none}
+  .zb-has-dropdown:hover>.zb-dropdown{display:none}
+  .zb-has-dropdown.is-open>.zb-dropdown,.zb-has-dropdown:focus-within.is-open>.zb-dropdown{display:grid}
+}
