@@ -43,6 +43,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   mission.after(block);
 });
 
+// Fotografias editoriais ilustrativas: pessoas e processos reais no contexto
+// dos serviços, sem apresentar os personagens como equipe ou clientes ZABIELOS.
+document.addEventListener('DOMContentLoaded',()=>{
+  const services={
+    'b2b-representation':'service-representation.webp',
+    'import-export':'service-import-export.webp',
+    'manufacturer-sourcing':'service-sourcing.webp',
+    'market-research':'service-research.webp',
+    'product-development':'service-development.webp'
+  };
+  const path=location.pathname;
+  const root=path.includes('/zabielos-site/')?'/zabielos-site/':'/';
+  const lang=(path.match(/\/(pt|en|es|it)\//)||[])[1]||'en';
+  const caption={pt:'Imagem ilustrativa',en:'Illustrative image',es:'Imagen ilustrativa',it:'Immagine illustrativa'}[lang];
+  const detail=path.match(/\/(pt|en|es|it)\/services\/([^/]+)\/?$/);
+  if(detail&&services[detail[2]]){
+    const hero=document.querySelector('main .subhero');
+    if(hero){
+      const figure=document.createElement('figure');figure.className='wrap zb-service-photo';
+      const alt=hero.querySelector('h1')?.textContent||caption;
+      figure.innerHTML='<img src="'+root+'assets/services/'+services[detail[2]]+'" alt="'+alt+' — '+caption+'" width="1600" height="900" loading="eager" decoding="async"><figcaption>'+caption+'</figcaption>';
+      hero.after(figure);
+    }
+  }
+  document.querySelectorAll('.zb-service-overview-card').forEach(card=>{
+    const href=card.querySelector('a[href]')?.getAttribute('href')||'';
+    const slug=href.split('/').filter(Boolean).pop();
+    if(!services[slug])return;
+    const img=document.createElement('img');img.className='zb-service-card-photo';img.src=root+'assets/services/'+services[slug];img.alt=(card.querySelector('h2')?.textContent||'')+' — '+caption;img.loading='lazy';img.decoding='async';
+    card.prepend(img);
+  });
+  document.querySelectorAll('.zb-premium-service').forEach(link=>{
+    const slug=(link.getAttribute('href')||'').split('/').filter(Boolean).pop();
+    if(!services[slug])return;
+    const glyph=link.querySelector('.zb-service-glyph');
+    if(!glyph)return;
+    const img=document.createElement('img');img.className='zb-service-mini-photo';img.src=root+'assets/services/'+services[slug];img.alt='';img.loading='lazy';img.decoding='async';
+    glyph.replaceWith(img);
+  });
+});
+
 // Portfólio B2B: itens encontrados em catálogos comerciais recebidos,
 // apresentados sem marcas, sem preços e sem afirmar representação exclusiva.
 document.addEventListener('DOMContentLoaded',()=>{
