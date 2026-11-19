@@ -1,3 +1,3 @@
 User-agent: *
-Allow: /zabielos-site/
-Sitemap: https://fbc915320.github.io/zabielos-site/sitemap.xml
+Allow: /
+Sitemap: https://zabielos.com.br/sitemap.xml
